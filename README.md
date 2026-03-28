@@ -1,0 +1,76 @@
+# Loopndroll
+
+Loopndroll is a macOS menu bar app that installs a global Codex `Stop` hook under `~/.codex` and can keep Codex sessions running either indefinitely or for a per-thread turn budget.
+
+## What it does
+
+- Adds `codex_hooks = true` to `~/.codex/config.toml`
+- Creates or merges a managed `Stop` hook in `~/.codex/hooks.json`
+- Stores its runtime state in `~/Library/Application Support/loopndroll/state.json`
+- Keeps the hook installed even when the app is off; the helper checks app state and no-ops when disabled
+
+The managed hook uses Codex `Stop` hooks, which continue Codex by returning `{"decision":"block","reason":"..."}` to the runtime.
+
+## Important behavior
+
+- Hooks apply reliably to new Codex threads created after Loopndroll is installed.
+- If a Codex thread was already running before the hook was installed, that existing thread may not pick up the new hook dynamically.
+- Toggling `Start` or `Stop` updates shared state immediately for threads that already know about the hook.
+
+## Install
+
+### Prebuilt app
+
+1. Download `Loopndroll.app.zip` from a release or the `dist/` folder produced by the packaging script.
+2. Unzip it.
+3. Move `Loopndroll.app` into `/Applications` or another permanent location.
+4. Launch the app and allow it to run.
+5. Open a new Codex thread after first install.
+
+This repository currently packages an unsigned app bundle with ad-hoc signing only. On another Mac, Gatekeeper may require right-click -> `Open` on first launch, or the app may need to be notarized before broader distribution.
+
+### Build from source
+
+```bash
+swift build
+swift run Loopndroll
+```
+
+## Package for sharing
+
+```bash
+./scripts/package_app.sh
+```
+
+That command creates:
+
+- `dist/Loopndroll.app`
+- `dist/Loopndroll.app.zip`
+
+## Structure
+
+- `Sources/LoopndrollCore`: install/repair logic, state store, hook decision engine, and prompt rendering
+- `Sources/LoopndrollApp`: SwiftUI menu bar app
+- `Sources/LoopndrollHook`: dedicated helper executable for tests and direct CLI use
+- `Packaging/Info.plist`: app bundle metadata used by the packager
+- `scripts/package_app.sh`: release packaging script
+
+The app binary also supports `--hook` mode so the installed hook can point at a stable copied executable in `~/Library/Application Support/loopndroll/bin/loopndroll-hook`.
+
+## Build
+
+```bash
+swift build
+```
+
+## Run
+
+```bash
+swift run Loopndroll
+```
+
+## Test
+
+```bash
+swift test
+```

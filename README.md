@@ -2,6 +2,8 @@
 
 Loopndroll is a macOS menu bar app that installs a global Codex `Stop` hook under `~/.codex` and can keep Codex sessions running either indefinitely or for a per-thread turn budget.
 
+https://github.com/user-attachments/assets/d69f08ee-86a0-40a3-a2f6-ef625bd9d7eb
+
 ## What it does
 
 - Adds `codex_hooks = true` to `~/.codex/config.toml`

@@ -47,6 +47,18 @@ That command creates:
 - `dist/Loopndroll.app`
 - `dist/Loopndroll.app.zip`
 
+To sign with a real Developer ID certificate instead of ad-hoc signing:
+
+```bash
+SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID)" ./scripts/package_app.sh
+```
+
+You can list available code-signing identities with:
+
+```bash
+security find-identity -v -p codesigning
+```
+
 ## Structure
 
 - `Sources/LoopndrollCore`: install/repair logic, state store, hook decision engine, and prompt rendering

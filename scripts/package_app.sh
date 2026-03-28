@@ -10,6 +10,7 @@ CONTENTS_DIR="$APP_DIR/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
 RESOURCES_DIR="$CONTENTS_DIR/Resources"
 ZIP_PATH="$DIST_DIR/$APP_NAME.app.zip"
+SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 
 cd "$ROOT_DIR"
 
@@ -25,8 +26,14 @@ cp "$ROOT_DIR/Packaging/Info.plist" "$CONTENTS_DIR/Info.plist"
 chmod 755 "$MACOS_DIR/$APP_NAME"
 printf 'APPL????' > "$CONTENTS_DIR/PkgInfo"
 
-echo "Applying ad-hoc signature..."
-codesign --force --deep --sign - "$APP_DIR"
+if [[ "$SIGN_IDENTITY" == "-" ]]; then
+    echo "Applying ad-hoc signature..."
+    CODESIGN_ARGS=(--force --deep --sign "$SIGN_IDENTITY")
+else
+    echo "Signing with identity: $SIGN_IDENTITY"
+    CODESIGN_ARGS=(--force --deep --options runtime --sign "$SIGN_IDENTITY")
+fi
+codesign "${CODESIGN_ARGS[@]}" "$APP_DIR"
 
 echo "Creating zip archive..."
 rm -f "$ZIP_PATH"

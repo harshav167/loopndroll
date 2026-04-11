@@ -1,9 +1,17 @@
 import { BrowserWindow, Updater, defineElectrobunRPC } from "electrobun/bun";
-import type {
-  WindowControlAction,
-  WindowControlsRpcSchema,
-  WindowControlsState,
-} from "../shared/window-controls-rpc";
+import type { AppRpcSchema, WindowControlAction, WindowControlsState } from "../shared/app-rpc";
+import {
+  clearHooks,
+  ensureLoopndrollSetup,
+  getLoopndrollSnapshot,
+  registerHooks,
+  revealHooksFile,
+  saveDefaultPrompt,
+  deleteSession,
+  setGlobalPreset,
+  setLoopScope,
+  setSessionPreset,
+} from "./loopndroll";
 
 const DEV_SERVER_PORT = 5173;
 const DEV_SERVER_URL = `http://127.0.0.1:${DEV_SERVER_PORT}`;
@@ -57,7 +65,7 @@ function getWindowState(): WindowControlsState {
 }
 
 function createWindowRpc() {
-  return defineElectrobunRPC<WindowControlsRpcSchema>("bun", {
+  return defineElectrobunRPC<AppRpcSchema>("bun", {
     handlers: {
       requests: {
         getWindowState() {
@@ -83,6 +91,36 @@ function createWindowRpc() {
           }
 
           return getWindowState();
+        },
+        ensureLoopndrollSetup() {
+          return ensureLoopndrollSetup();
+        },
+        getLoopndrollState() {
+          return getLoopndrollSnapshot();
+        },
+        saveDefaultPrompt({ defaultPrompt }: { defaultPrompt: string }) {
+          return saveDefaultPrompt(defaultPrompt);
+        },
+        setLoopScope({ scope }) {
+          return setLoopScope(scope);
+        },
+        setGlobalPreset({ preset }) {
+          return setGlobalPreset(preset);
+        },
+        setSessionPreset({ sessionId, preset }) {
+          return setSessionPreset(sessionId, preset);
+        },
+        deleteSession({ sessionId }) {
+          return deleteSession(sessionId);
+        },
+        registerHooks() {
+          return registerHooks();
+        },
+        clearHooks() {
+          return clearHooks();
+        },
+        revealHooksFile() {
+          return revealHooksFile();
         },
       },
     },

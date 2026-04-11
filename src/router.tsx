@@ -1,7 +1,7 @@
 import { createHashRouter } from "react-router-dom";
 import App from "./app";
-import { DesignSystemRoute } from "./pages/design-system";
 import { HomeRoute } from "./pages/home";
+import { SettingsRoute } from "./pages/settings";
 
 export const router = createHashRouter([
   {
@@ -13,8 +13,8 @@ export const router = createHashRouter([
         element: <HomeRoute />,
       },
       {
-        path: "design-system",
-        element: <DesignSystemRoute />,
+        path: "settings",
+        element: <SettingsRoute />,
       },
     ],
   },

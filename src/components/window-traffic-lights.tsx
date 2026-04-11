@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getWindowControlsState, runWindowControl } from "@/lib/window-controls";
-import type { WindowControlAction, WindowControlsState } from "../shared/window-controls-rpc";
+import type { WindowControlAction, WindowControlsState } from "../shared/app-rpc";
 
 function TrafficLightIcon({ action }: { action: WindowControlAction }) {
   if (action === "close") {

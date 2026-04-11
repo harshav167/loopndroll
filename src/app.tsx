@@ -11,15 +11,7 @@ function App() {
       <header className="electrobun-webkit-app-region-drag relative z-20 h-14 flex-none bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <WindowTrafficLights />
         <div className="electrobun-webkit-app-region-no-drag absolute inset-y-0 right-4 flex items-center gap-2 md:right-8">
-          <Button
-            onClick={() => navigate("/design-system")}
-            size="sm"
-            type="button"
-            variant="ghost"
-          >
-            Design System
-          </Button>
-          <Button size="sm" type="button" variant="outline">
+          <Button onClick={() => navigate("/settings")} size="sm" type="button" variant="outline">
             <Gear data-icon="inline-start" weight="regular" />
             Settings
           </Button>

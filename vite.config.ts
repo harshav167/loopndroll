@@ -1,19 +1,22 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   base: "./",
   plugins: [tailwindcss(), react()],
-  root: "src/mainview",
+  root: "src",
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src/mainview"),
+      "@": path.resolve(currentDir, "./src"),
     },
   },
   build: {
-    outDir: "../../dist",
+    outDir: "../dist",
     emptyOutDir: true,
   },
   server: {

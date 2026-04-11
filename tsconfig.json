@@ -6,9 +6,8 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "Bundler",
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/mainview/*"]
+      "@/*": ["./src/*"]
     },
     "allowImportingTsExtensions": true,
     "isolatedModules": true,

@@ -11,8 +11,8 @@ export default {
       entrypoint: "src/bun/index.ts",
     },
     copy: {
-      "dist/index.html": "views/mainview/index.html",
-      "dist/assets": "views/mainview/assets",
+      "dist/index.html": "views/app/index.html",
+      "dist/assets": "views/app/assets",
     },
     watchIgnore: ["dist/**"],
     mac: {

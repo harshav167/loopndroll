@@ -6,6 +6,8 @@ import { ChatStatusIndicator } from "@/components/chat-status-indicator";
 import {
   AwaitReplyCardIcon,
   ChatCard,
+  getChatCardThemeForPreset,
+  type ChatCardTheme,
   CompletionChecksCardIcon,
   InfiniteCardIcon,
   TurnCountMarker,
@@ -41,38 +43,45 @@ const globalPresets: Array<{
   preset: LoopPreset;
   title: string;
   marker: ReactNode;
+  theme: ChatCardTheme;
   markerContainerClassName?: string;
 }> = [
   {
     preset: "infinite",
     title: "Infinite",
     marker: <InfiniteCardIcon />,
+    theme: "orange",
   },
   {
     preset: "await-reply",
     title: "Await Reply",
     marker: <AwaitReplyCardIcon />,
+    theme: "cyan",
   },
   {
     preset: "completion-checks",
     title: "Completion Checks",
     marker: <CompletionChecksCardIcon />,
+    theme: "emerald",
   },
   {
     preset: "max-turns-1",
     title: "Max Turns",
     marker: <TurnCountMarker className="-ml-0.5" value={1} />,
+    theme: "olive",
     markerContainerClassName: "-ml-0.5",
   },
   {
     preset: "max-turns-2",
     title: "Max Turns",
     marker: <TurnCountMarker value={2} />,
+    theme: "olive",
   },
   {
     preset: "max-turns-3",
     title: "Max Turns",
     marker: <TurnCountMarker value={3} />,
+    theme: "olive",
   },
 ];
 
@@ -91,6 +100,7 @@ function ChatCardRail({
         {globalPresets.map((item) => (
           <ChatCard
             key={item.preset}
+            theme={item.theme}
             isRunning={activePreset === item.preset}
             marker={item.marker}
             markerContainerClassName={item.markerContainerClassName}
@@ -469,7 +479,13 @@ export function HomeRoute() {
       <DropdownMenu>
         <DropdownMenuTrigger
           aria-label="Configure Completion checks preset"
-          render={<Button className="-ml-[10px]" variant="ghost" size="icon-sm" />}
+          render={
+            <Button
+              className="-ml-[10px] text-emerald-950 hover:bg-emerald-50/80 hover:text-emerald-950"
+              variant="ghost"
+              size="icon-sm"
+            />
+          }
         >
           <DotsThreeVertical aria-hidden="true" weight="bold" />
         </DropdownMenuTrigger>
@@ -644,6 +660,9 @@ export function HomeRoute() {
                       >
                         {sortedSessions.map((session, index) => {
                           const isSessionActive = session.effectivePreset !== null;
+                          const sessionStatusTheme = getChatCardThemeForPreset(
+                            session.effectivePreset ?? session.preset ?? "infinite",
+                          );
                           const selectedSessionPreset =
                             pendingSessionPresets[session.sessionId] ??
                             session.preset ??
@@ -682,7 +701,10 @@ export function HomeRoute() {
                               variants={contentFadeVariants}
                             >
                               <TableCell className="w-0 pl-0 pr-3 py-3">
-                                <ChatStatusIndicator active={isSessionActive} />
+                                <ChatStatusIndicator
+                                  active={isSessionActive}
+                                  theme={sessionStatusTheme}
+                                />
                               </TableCell>
                               <TableCell className="w-full min-w-0 px-0 py-3">
                                 {getSessionPrompt(session) ? (

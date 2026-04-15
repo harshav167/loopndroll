@@ -184,10 +184,7 @@ function shouldEnableHookDebugLogging() {
   return isTruthyEnvValue(process.env[HOOK_DEBUG_LOG_ENV_NAME]);
 }
 
-function sanitizeHookDebugLogValue(
-  value: unknown,
-  seen = new WeakSet<object>(),
-): unknown {
+function sanitizeHookDebugLogValue(value: unknown, seen = new WeakSet<object>()): unknown {
   if (value == null || typeof value === "boolean" || typeof value === "number") {
     return value;
   }
@@ -1384,6 +1381,19 @@ function isPersistentPromptPreset(preset: LoopPreset | null) {
   );
 }
 
+const OPT_OUT_EXISTING_INACTIVE_SESSIONS_FROM_GLOBAL_PRESET_SQL = `update sessions
+  set preset_overridden = 1
+  where archived = 0
+    and preset is null
+    and preset_overridden = 0
+    and active_since is null`;
+
+function optOutExistingInactiveSessionsFromGlobalPreset(executor: {
+  run: (sql: string) => unknown;
+}) {
+  executor.run(OPT_OUT_EXISTING_INACTIVE_SESSIONS_FROM_GLOBAL_PRESET_SQL);
+}
+
 function getEffectivePresetForSession(db: Database, sessionId: string) {
   const row = db
     .query(
@@ -1605,21 +1615,17 @@ function updateSessionPresetFromBridge(db: Database, sessionId: string, preset: 
 }
 
 function updateGlobalPresetFromBridge(db: Database, preset: LoopPreset | null) {
-  const timestamp = nowIsoString();
   const applyUpdate = db.transaction(() => {
+    if (preset !== null) {
+      optOutExistingInactiveSessionsFromGlobalPreset(db);
+    }
+
     db.query("update settings set global_preset = ? where id = 1").run(preset);
 
     if (preset === null) {
       db.run(
         `update sessions
          set active_since = null
-         where archived = 0
-           and preset_overridden = 0`,
-      );
-    } else {
-      db.run(
-        `update sessions
-         set active_since = coalesce(active_since, '${timestamp}')
          where archived = 0
            and preset_overridden = 0`,
       );
@@ -4122,21 +4128,17 @@ export async function setLoopScope(scope: LoopScope) {
 export async function setGlobalPreset(preset: LoopPreset | null) {
   const paths = getLoopndrollPaths();
   const { db } = getLoopndrollDatabase(paths.databasePath);
-  const timestamp = nowIsoString();
 
   db.transaction((tx) => {
+    if (preset !== null) {
+      optOutExistingInactiveSessionsFromGlobalPreset(tx);
+    }
+
     tx.update(settings).set({ globalPreset: preset }).where(eq(settings.id, 1)).run();
     if (preset === null) {
       tx.run(
         `update sessions
          set active_since = null
-         where archived = 0
-           and preset_overridden = 0`,
-      );
-    } else {
-      tx.run(
-        `update sessions
-         set active_since = coalesce(active_since, '${timestamp}')
          where archived = 0
            and preset_overridden = 0`,
       );

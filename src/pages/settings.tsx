@@ -960,7 +960,12 @@ export function SettingsRoute() {
               <CardFooter className={`${settingsSectionFooterClassName} gap-2`}>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <span>Learn more in the </span>
-                  <a className="text-blue-400 transition-colors hover:text-blue-300" href="#">
+                  <a
+                    className="text-blue-400 transition-colors hover:text-blue-300"
+                    href="https://github.com/lnikell/loopndroll?tab=readme-ov-file#telegram-commands"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
                     documentation
                   </a>
                 </div>
@@ -1053,7 +1058,12 @@ export function SettingsRoute() {
               <CardFooter className={`${settingsSectionFooterClassName} gap-2`}>
                 <div className="flex items-center gap-1 text-sm text-muted-foreground">
                   <span>Learn more in the </span>
-                  <a className="text-blue-400 transition-colors hover:text-blue-300" href="#">
+                  <a
+                    className="text-blue-400 transition-colors hover:text-blue-300"
+                    href="https://github.com/lnikell/loopndroll?tab=readme-ov-file#4-completion-checks"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
                     documentation
                   </a>
                 </div>

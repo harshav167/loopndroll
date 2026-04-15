@@ -5,6 +5,13 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+if [[ -f ".env" ]]; then
+  set -a
+  # Load local release credentials and defaults for macOS packaging.
+  source ".env"
+  set +a
+fi
+
 fail() {
   printf 'error: %s\n' "$1" >&2
   exit 1

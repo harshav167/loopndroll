@@ -1,11 +1,12 @@
 import { ArrowLeft, DotsThree, Plus } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod/v4";
 import {
   type CompletionCheck,
   getTelegramChats,
+  openExternalUrl,
   revealHooksFile,
   type LoopNotification,
   type TelegramChatOption,
@@ -192,6 +193,15 @@ function mergeTelegramChats(
 
 function inferTelegramChatKind(chatId: string): TelegramChatOption["kind"] {
   return chatId.trim().startsWith("-") ? "group" : "dm";
+}
+
+async function handleExternalLinkClick(event: MouseEvent<HTMLAnchorElement>, url: string) {
+  event.preventDefault();
+
+  const opened = await openExternalUrl(url);
+  if (!opened) {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
 }
 
 function parseCommandsText(commandsText: string) {
@@ -662,7 +672,13 @@ export function SettingsRoute() {
                       <FieldDescription>
                         <a
                           className="text-blue-400 transition-colors hover:text-blue-300"
-                          href="https://t.me/BotFather"
+                          href="https://github.com/lnikell/loopndroll?tab=readme-ov-file#telegram-setup"
+                          onClick={(event) => {
+                            void handleExternalLinkClick(
+                              event,
+                              "https://github.com/lnikell/loopndroll?tab=readme-ov-file#telegram-setup",
+                            );
+                          }}
                           rel="noreferrer"
                           target="_blank"
                         >
@@ -963,6 +979,12 @@ export function SettingsRoute() {
                   <a
                     className="text-blue-400 transition-colors hover:text-blue-300"
                     href="https://github.com/lnikell/loopndroll?tab=readme-ov-file#telegram-commands"
+                    onClick={(event) => {
+                      void handleExternalLinkClick(
+                        event,
+                        "https://github.com/lnikell/loopndroll?tab=readme-ov-file#telegram-commands",
+                      );
+                    }}
                     rel="noreferrer"
                     target="_blank"
                   >
@@ -1061,6 +1083,12 @@ export function SettingsRoute() {
                   <a
                     className="text-blue-400 transition-colors hover:text-blue-300"
                     href="https://github.com/lnikell/loopndroll?tab=readme-ov-file#4-completion-checks"
+                    onClick={(event) => {
+                      void handleExternalLinkClick(
+                        event,
+                        "https://github.com/lnikell/loopndroll?tab=readme-ov-file#4-completion-checks",
+                      );
+                    }}
                     rel="noreferrer"
                     target="_blank"
                   >

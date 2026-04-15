@@ -55,6 +55,11 @@ export async function getTelegramChats(
   return (await rpc?.request.getTelegramChats({ botToken, waitForUpdates })) ?? [];
 }
 
+export async function openExternalUrl(url: string): Promise<boolean> {
+  const rpc = await getAppRpc();
+  return (await rpc?.request.openExternalUrl({ url })) ?? false;
+}
+
 export async function updateNotification(notification: UpdateLoopNotificationInput) {
   const rpc = await getAppRpc();
   return rpc?.request.updateNotification({ notification });

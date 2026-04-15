@@ -1,6 +1,7 @@
 import {
   ApplicationMenu,
   BrowserWindow,
+  Utils,
   Updater,
   defineElectrobunRPC,
   type UpdateStatusEntry,
@@ -528,8 +529,11 @@ function createWindowRpc() {
         createCompletionCheck({ completionCheck }) {
           return createCompletionCheck(completionCheck);
         },
-        getTelegramChats({ botToken }) {
-          return fetchTelegramChats(botToken);
+        getTelegramChats({ botToken, waitForUpdates }) {
+          return fetchTelegramChats(botToken, waitForUpdates);
+        },
+        openExternalUrl({ url }) {
+          return Utils.openExternal(url);
         },
         updateNotification({ notification }) {
           return updateLoopNotification(notification);

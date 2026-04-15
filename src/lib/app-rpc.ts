@@ -38,6 +38,9 @@ type AppRpc = {
     getTelegramChats: (
       params: AppRpcSchema["bun"]["requests"]["getTelegramChats"]["params"],
     ) => Promise<AppRpcSchema["bun"]["requests"]["getTelegramChats"]["response"]>;
+    openExternalUrl: (
+      params: AppRpcSchema["bun"]["requests"]["openExternalUrl"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["openExternalUrl"]["response"]>;
     updateNotification: (
       params: AppRpcSchema["bun"]["requests"]["updateNotification"]["params"],
     ) => Promise<AppRpcSchema["bun"]["requests"]["updateNotification"]["response"]>;

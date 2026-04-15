@@ -196,6 +196,12 @@ export type AppRpcSchema = {
         };
         response: TelegramChatOption[];
       };
+      openExternalUrl: {
+        params: {
+          url: string;
+        };
+        response: boolean;
+      };
       updateNotification: {
         params: {
           notification: UpdateLoopNotificationInput;

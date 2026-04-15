@@ -67,7 +67,7 @@ type UseLoopndrollStateResult = {
 
 const LOOPNDROLL_POLL_INTERVAL_MS = 2000;
 
-export function useLoopndrollState(): UseLoopndrollStateResult {
+function useLoopndrollSnapshotState() {
   const [snapshot, setSnapshot] = useState<LoopndrollSnapshot | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -114,74 +114,94 @@ export function useLoopndrollState(): UseLoopndrollStateResult {
     };
   }, []);
 
-  async function runMutation(action: () => Promise<LoopndrollSnapshot | undefined>) {
-    setErrorMessage(null);
-
-    try {
-      const nextSnapshot = await action();
-      if (nextSnapshot) {
-        setSnapshot(nextSnapshot);
-      }
-    } catch (error) {
-      setErrorMessage(error instanceof Error ? error.message : "Loopndroll update failed.");
-      throw error;
-    }
-  }
-
   return {
-    snapshot,
-    isLoading,
     errorMessage,
-    savePrompt(defaultPrompt) {
+    isLoading,
+    setErrorMessage,
+    setSnapshot,
+    snapshot,
+  };
+}
+
+async function runLoopndrollMutation(
+  action: () => Promise<LoopndrollSnapshot | undefined>,
+  setErrorMessage: (message: string | null) => void,
+  setSnapshot: (snapshot: LoopndrollSnapshot) => void,
+) {
+  setErrorMessage(null);
+
+  try {
+    const nextSnapshot = await action();
+    if (nextSnapshot) {
+      setSnapshot(nextSnapshot);
+    }
+  } catch (error) {
+    setErrorMessage(error instanceof Error ? error.message : "Loopndroll update failed.");
+    throw error;
+  }
+}
+
+function createLoopndrollActions(
+  runMutation: (action: () => Promise<LoopndrollSnapshot | undefined>) => Promise<void>,
+) {
+  return {
+    savePrompt(defaultPrompt: string) {
       return runMutation(() => saveDefaultPrompt(defaultPrompt));
     },
-    addNotification(notification) {
+    addNotification(notification: CreateLoopNotificationInput) {
       return runMutation(() => createNotification(notification));
     },
-    addCompletionCheck(completionCheck) {
+    addCompletionCheck(completionCheck: { label?: string; commands: string[] }) {
       return runMutation(() => createCompletionCheck(completionCheck));
     },
-    editNotification(notification) {
+    editNotification(notification: UpdateLoopNotificationInput) {
       return runMutation(() => updateNotification(notification));
     },
-    editCompletionCheck(completionCheck) {
+    editCompletionCheck(completionCheck: { id: string; label?: string; commands: string[] }) {
       return runMutation(() => updateCompletionCheck(completionCheck));
     },
-    removeNotification(notificationId) {
+    removeNotification(notificationId: string) {
       return runMutation(() => deleteNotification(notificationId));
     },
-    removeCompletionCheck(completionCheckId) {
+    removeCompletionCheck(completionCheckId: string) {
       return runMutation(() => deleteCompletionCheck(completionCheckId));
     },
-    updateScope(scope) {
+    updateScope(scope: LoopScope) {
       return runMutation(() => setLoopScope(scope));
     },
-    updateGlobalPreset(preset) {
+    updateGlobalPreset(preset: LoopPreset | null) {
       return runMutation(() => setGlobalPreset(preset));
     },
-    updateGlobalNotification(notificationId) {
+    updateGlobalNotification(notificationId: string | null) {
       return runMutation(() => setGlobalNotification(notificationId));
     },
-    updateGlobalCompletionCheckConfig(completionCheckId, waitForReplyAfterCompletion) {
+    updateGlobalCompletionCheckConfig(
+      completionCheckId: string | null,
+      waitForReplyAfterCompletion: boolean,
+    ) {
       return runMutation(() =>
         setGlobalCompletionCheckConfig(completionCheckId, waitForReplyAfterCompletion),
       );
     },
-    updateSessionNotifications(sessionId, notificationIds) {
+    updateSessionNotifications(sessionId: string, notificationIds: string[]) {
       return runMutation(() => setSessionNotifications(sessionId, notificationIds));
     },
-    updateSessionPreset(sessionId, preset) {
+    updateSessionPreset(sessionId: string, preset: LoopPreset | null) {
       return runMutation(() => setSessionPreset(sessionId, preset));
     },
-    updateSessionCompletionCheckConfig(sessionId, completionCheckId, waitForReplyAfterCompletion) {
+    updateSessionCompletionCheckConfig(
+      sessionId: string,
+      completionCheckId: string | null,
+      waitForReplyAfterCompletion: boolean,
+    ) {
       return runMutation(() =>
         setSessionCompletionCheckConfig(sessionId, completionCheckId, waitForReplyAfterCompletion),
       );
     },
-    updateSessionArchived(sessionId, archived) {
+    updateSessionArchived(sessionId: string, archived: boolean) {
       return runMutation(() => setSessionArchived(sessionId, archived));
     },
-    removeSession(sessionId) {
+    removeSession(sessionId: string) {
       return runMutation(() => deleteSession(sessionId));
     },
     installHooks() {
@@ -193,5 +213,20 @@ export function useLoopndrollState(): UseLoopndrollStateResult {
     refresh() {
       return runMutation(() => getLoopndrollState());
     },
+  } satisfies Omit<UseLoopndrollStateResult, "snapshot" | "isLoading" | "errorMessage">;
+}
+
+export function useLoopndrollState(): UseLoopndrollStateResult {
+  const { snapshot, isLoading, errorMessage, setErrorMessage, setSnapshot } =
+    useLoopndrollSnapshotState();
+
+  const runMutation = (action: () => Promise<LoopndrollSnapshot | undefined>) =>
+    runLoopndrollMutation(action, setErrorMessage, setSnapshot);
+
+  return {
+    snapshot,
+    isLoading,
+    errorMessage,
+    ...createLoopndrollActions(runMutation),
   };
 }

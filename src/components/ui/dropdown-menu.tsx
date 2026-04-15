@@ -174,7 +174,7 @@ function DropdownMenuCheckboxItem({
           <CheckIcon />
         </MenuPrimitive.CheckboxItemIndicator>
       </span>
-      {children}
+      <span className="min-w-0 flex-1 truncate">{children}</span>
     </MenuPrimitive.CheckboxItem>
   );
 }
@@ -209,7 +209,7 @@ function DropdownMenuRadioItem({
           <CheckIcon />
         </MenuPrimitive.RadioItemIndicator>
       </span>
-      {children}
+      <span className="min-w-0 flex-1 truncate">{children}</span>
     </MenuPrimitive.RadioItem>
   );
 }

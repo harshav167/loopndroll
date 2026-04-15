@@ -473,124 +473,142 @@ function getWindowState(): WindowControlsState {
   };
 }
 
+function handleWindowControl({ action }: { action: WindowControlAction }) {
+  switch (action) {
+    case "close":
+      mainWindow.close();
+      break;
+    case "minimize":
+      mainWindow.minimize();
+      break;
+    case "toggle-primary":
+      if (isMac) {
+        mainWindow.setFullScreen(!mainWindow.isFullScreen());
+      } else if (mainWindow.isMaximized()) {
+        mainWindow.unmaximize();
+      } else {
+        mainWindow.maximize();
+      }
+      break;
+  }
+
+  return getWindowState();
+}
+
+function getAppRpcRequestHandlers() {
+  return {
+    getWindowState,
+    windowControl: handleWindowControl,
+    getAppUpdateState() {
+      return appUpdateState;
+    },
+    checkForAppUpdate,
+    downloadAppUpdate,
+    applyAppUpdate,
+    openExternalUrl({ url }: { url: string }) {
+      return Utils.openExternal(url);
+    },
+  };
+}
+
+function getLoopndrollRpcRequestHandlers() {
+  return {
+    ensureLoopndrollSetup,
+    getLoopndrollState: getLoopndrollSnapshot,
+    saveDefaultPrompt({ defaultPrompt }: { defaultPrompt: string }) {
+      return saveDefaultPrompt(defaultPrompt);
+    },
+    createNotification({ notification }: { notification: Parameters<typeof createLoopNotification>[0] }) {
+      return createLoopNotification(notification);
+    },
+    createCompletionCheck({
+      completionCheck,
+    }: {
+      completionCheck: Parameters<typeof createCompletionCheck>[0];
+    }) {
+      return createCompletionCheck(completionCheck);
+    },
+    getTelegramChats({ botToken, waitForUpdates }: { botToken: string; waitForUpdates?: boolean }) {
+      return fetchTelegramChats(botToken, waitForUpdates);
+    },
+    updateNotification({
+      notification,
+    }: {
+      notification: Parameters<typeof updateLoopNotification>[0];
+    }) {
+      return updateLoopNotification(notification);
+    },
+    updateCompletionCheck({
+      completionCheck,
+    }: {
+      completionCheck: Parameters<typeof updateCompletionCheck>[0];
+    }) {
+      return updateCompletionCheck(completionCheck);
+    },
+    setSessionNotifications({ sessionId, notificationIds }: { sessionId: string; notificationIds: string[] }) {
+      return persistSessionNotifications(sessionId, notificationIds);
+    },
+    deleteNotification({ notificationId }: { notificationId: string }) {
+      return deleteLoopNotification(notificationId);
+    },
+    deleteCompletionCheck({ completionCheckId }: { completionCheckId: string }) {
+      return deleteCompletionCheck(completionCheckId);
+    },
+    setLoopScope({ scope }: { scope: Parameters<typeof setLoopScope>[0] }) {
+      return setLoopScope(scope);
+    },
+    setGlobalPreset({ preset }: { preset: Parameters<typeof setGlobalPreset>[0] }) {
+      return setGlobalPreset(preset);
+    },
+    setGlobalNotification({ notificationId }: { notificationId: string | null }) {
+      return setGlobalNotification(notificationId);
+    },
+    setGlobalCompletionCheckConfig({
+      completionCheckId,
+      waitForReplyAfterCompletion,
+    }: {
+      completionCheckId: string | null;
+      waitForReplyAfterCompletion: boolean;
+    }) {
+      return setGlobalCompletionCheckConfig(completionCheckId, waitForReplyAfterCompletion);
+    },
+    setSessionPreset({ sessionId, preset }: { sessionId: string; preset: Parameters<typeof setSessionPreset>[1] }) {
+      return setSessionPreset(sessionId, preset);
+    },
+    setSessionCompletionCheckConfig({
+      sessionId,
+      completionCheckId,
+      waitForReplyAfterCompletion,
+    }: {
+      sessionId: string;
+      completionCheckId: string | null;
+      waitForReplyAfterCompletion: boolean;
+    }) {
+      return setSessionCompletionCheckConfig(
+        sessionId,
+        completionCheckId,
+        waitForReplyAfterCompletion,
+      );
+    },
+    setSessionArchived({ sessionId, archived }: { sessionId: string; archived: boolean }) {
+      return persistSessionArchived(sessionId, archived);
+    },
+    deleteSession({ sessionId }: { sessionId: string }) {
+      return deleteSession(sessionId);
+    },
+    registerHooks,
+    clearHooks,
+    revealHooksFile,
+  };
+}
+
 function createWindowRpc() {
   return defineElectrobunRPC<AppRpcSchema>("bun", {
     maxRequestTime: 60_000,
     handlers: {
       requests: {
-        getWindowState() {
-          return getWindowState();
-        },
-        windowControl({ action }: { action: WindowControlAction }) {
-          switch (action) {
-            case "close":
-              mainWindow.close();
-              break;
-            case "minimize":
-              mainWindow.minimize();
-              break;
-            case "toggle-primary":
-              if (isMac) {
-                mainWindow.setFullScreen(!mainWindow.isFullScreen());
-              } else if (mainWindow.isMaximized()) {
-                mainWindow.unmaximize();
-              } else {
-                mainWindow.maximize();
-              }
-              break;
-          }
-
-          return getWindowState();
-        },
-        getAppUpdateState() {
-          return appUpdateState;
-        },
-        checkForAppUpdate() {
-          return checkForAppUpdate();
-        },
-        downloadAppUpdate() {
-          return downloadAppUpdate();
-        },
-        applyAppUpdate() {
-          return applyAppUpdate();
-        },
-        ensureLoopndrollSetup() {
-          return ensureLoopndrollSetup();
-        },
-        getLoopndrollState() {
-          return getLoopndrollSnapshot();
-        },
-        saveDefaultPrompt({ defaultPrompt }: { defaultPrompt: string }) {
-          return saveDefaultPrompt(defaultPrompt);
-        },
-        createNotification({ notification }) {
-          return createLoopNotification(notification);
-        },
-        createCompletionCheck({ completionCheck }) {
-          return createCompletionCheck(completionCheck);
-        },
-        getTelegramChats({ botToken, waitForUpdates }) {
-          return fetchTelegramChats(botToken, waitForUpdates);
-        },
-        openExternalUrl({ url }) {
-          return Utils.openExternal(url);
-        },
-        updateNotification({ notification }) {
-          return updateLoopNotification(notification);
-        },
-        updateCompletionCheck({ completionCheck }) {
-          return updateCompletionCheck(completionCheck);
-        },
-        setSessionNotifications({ sessionId, notificationIds }) {
-          return persistSessionNotifications(sessionId, notificationIds);
-        },
-        deleteNotification({ notificationId }) {
-          return deleteLoopNotification(notificationId);
-        },
-        deleteCompletionCheck({ completionCheckId }) {
-          return deleteCompletionCheck(completionCheckId);
-        },
-        setLoopScope({ scope }) {
-          return setLoopScope(scope);
-        },
-        setGlobalPreset({ preset }) {
-          return setGlobalPreset(preset);
-        },
-        setGlobalNotification({ notificationId }) {
-          return setGlobalNotification(notificationId);
-        },
-        setGlobalCompletionCheckConfig({ completionCheckId, waitForReplyAfterCompletion }) {
-          return setGlobalCompletionCheckConfig(completionCheckId, waitForReplyAfterCompletion);
-        },
-        setSessionPreset({ sessionId, preset }) {
-          return setSessionPreset(sessionId, preset);
-        },
-        setSessionCompletionCheckConfig({
-          sessionId,
-          completionCheckId,
-          waitForReplyAfterCompletion,
-        }) {
-          return setSessionCompletionCheckConfig(
-            sessionId,
-            completionCheckId,
-            waitForReplyAfterCompletion,
-          );
-        },
-        setSessionArchived({ sessionId, archived }) {
-          return persistSessionArchived(sessionId, archived);
-        },
-        deleteSession({ sessionId }) {
-          return deleteSession(sessionId);
-        },
-        registerHooks() {
-          return registerHooks();
-        },
-        clearHooks() {
-          return clearHooks();
-        },
-        revealHooksFile() {
-          return revealHooksFile();
-        },
+        ...getAppRpcRequestHandlers(),
+        ...getLoopndrollRpcRequestHandlers(),
       },
     },
   });

@@ -401,6 +401,7 @@ function SessionActionsContent({
               }}
             />
           ) : null}
+          <DropdownMenuSeparator />
         </>
       )}
       <DropdownMenuGroup>

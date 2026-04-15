@@ -18,7 +18,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import type { CompletionCheck, LoopPreset, LoopSession, LoopndrollSnapshot } from "@/lib/loopndroll";
+import type {
+  CompletionCheck,
+  LoopPreset,
+  LoopSession,
+  LoopndrollSnapshot,
+} from "@/lib/loopndroll";
 import { cn } from "@/lib/utils";
 
 const globalPresets: Array<{
@@ -310,7 +315,7 @@ export function GlobalCompletionCheckFooter({
         aria-label="Configure Completion checks preset"
         render={
           <Button
-            className="-ml-[10px] text-emerald-950 hover:bg-emerald-50/80 hover:text-emerald-950"
+            className="-ml-[10px] text-emerald-950 hover:!border-emerald-950/30 hover:!bg-transparent hover:text-emerald-950 aria-expanded:!border-emerald-950 aria-expanded:!bg-emerald-950 aria-expanded:!text-emerald-200 dark:hover:!bg-transparent dark:aria-expanded:!bg-emerald-950"
             variant="ghost"
             size="icon-sm"
           />

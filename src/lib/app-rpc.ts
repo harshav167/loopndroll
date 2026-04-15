@@ -8,6 +8,18 @@ type AppRpc = {
     windowControl: (
       params: AppRpcSchema["bun"]["requests"]["windowControl"]["params"],
     ) => Promise<AppRpcSchema["bun"]["requests"]["windowControl"]["response"]>;
+    getAppUpdateState: AppRpcSchema["bun"]["requests"]["getAppUpdateState"]["params"] extends undefined
+      ? () => Promise<AppRpcSchema["bun"]["requests"]["getAppUpdateState"]["response"]>
+      : never;
+    checkForAppUpdate: AppRpcSchema["bun"]["requests"]["checkForAppUpdate"]["params"] extends undefined
+      ? () => Promise<AppRpcSchema["bun"]["requests"]["checkForAppUpdate"]["response"]>
+      : never;
+    downloadAppUpdate: AppRpcSchema["bun"]["requests"]["downloadAppUpdate"]["params"] extends undefined
+      ? () => Promise<AppRpcSchema["bun"]["requests"]["downloadAppUpdate"]["response"]>
+      : never;
+    applyAppUpdate: AppRpcSchema["bun"]["requests"]["applyAppUpdate"]["params"] extends undefined
+      ? () => Promise<AppRpcSchema["bun"]["requests"]["applyAppUpdate"]["response"]>
+      : never;
     ensureLoopndrollSetup: AppRpcSchema["bun"]["requests"]["ensureLoopndrollSetup"]["params"] extends undefined
       ? () => Promise<AppRpcSchema["bun"]["requests"]["ensureLoopndrollSetup"]["response"]>
       : never;
@@ -17,15 +29,51 @@ type AppRpc = {
     saveDefaultPrompt: (
       params: AppRpcSchema["bun"]["requests"]["saveDefaultPrompt"]["params"],
     ) => Promise<AppRpcSchema["bun"]["requests"]["saveDefaultPrompt"]["response"]>;
+    createNotification: (
+      params: AppRpcSchema["bun"]["requests"]["createNotification"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["createNotification"]["response"]>;
+    createCompletionCheck: (
+      params: AppRpcSchema["bun"]["requests"]["createCompletionCheck"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["createCompletionCheck"]["response"]>;
+    getTelegramChats: (
+      params: AppRpcSchema["bun"]["requests"]["getTelegramChats"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["getTelegramChats"]["response"]>;
+    updateNotification: (
+      params: AppRpcSchema["bun"]["requests"]["updateNotification"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["updateNotification"]["response"]>;
+    updateCompletionCheck: (
+      params: AppRpcSchema["bun"]["requests"]["updateCompletionCheck"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["updateCompletionCheck"]["response"]>;
+    setSessionNotifications: (
+      params: AppRpcSchema["bun"]["requests"]["setSessionNotifications"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["setSessionNotifications"]["response"]>;
+    deleteNotification: (
+      params: AppRpcSchema["bun"]["requests"]["deleteNotification"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["deleteNotification"]["response"]>;
+    deleteCompletionCheck: (
+      params: AppRpcSchema["bun"]["requests"]["deleteCompletionCheck"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["deleteCompletionCheck"]["response"]>;
     setLoopScope: (
       params: AppRpcSchema["bun"]["requests"]["setLoopScope"]["params"],
     ) => Promise<AppRpcSchema["bun"]["requests"]["setLoopScope"]["response"]>;
     setGlobalPreset: (
       params: AppRpcSchema["bun"]["requests"]["setGlobalPreset"]["params"],
     ) => Promise<AppRpcSchema["bun"]["requests"]["setGlobalPreset"]["response"]>;
+    setGlobalNotification: (
+      params: AppRpcSchema["bun"]["requests"]["setGlobalNotification"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["setGlobalNotification"]["response"]>;
+    setGlobalCompletionCheckConfig: (
+      params: AppRpcSchema["bun"]["requests"]["setGlobalCompletionCheckConfig"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["setGlobalCompletionCheckConfig"]["response"]>;
     setSessionPreset: (
       params: AppRpcSchema["bun"]["requests"]["setSessionPreset"]["params"],
     ) => Promise<AppRpcSchema["bun"]["requests"]["setSessionPreset"]["response"]>;
+    setSessionCompletionCheckConfig: (
+      params: AppRpcSchema["bun"]["requests"]["setSessionCompletionCheckConfig"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["setSessionCompletionCheckConfig"]["response"]>;
+    setSessionArchived: (
+      params: AppRpcSchema["bun"]["requests"]["setSessionArchived"]["params"],
+    ) => Promise<AppRpcSchema["bun"]["requests"]["setSessionArchived"]["response"]>;
     deleteSession: (
       params: AppRpcSchema["bun"]["requests"]["deleteSession"]["params"],
     ) => Promise<AppRpcSchema["bun"]["requests"]["deleteSession"]["response"]>;

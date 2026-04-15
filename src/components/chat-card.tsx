@@ -1,5 +1,11 @@
 import type { CSSProperties, ReactNode } from "react";
-import { Infinity as InfinityIcon, Play, Stop } from "@phosphor-icons/react";
+import {
+  ChatCircleDots,
+  Checks,
+  Infinity as InfinityIcon,
+  Play,
+  Stop,
+} from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
@@ -19,6 +25,7 @@ type ChatCardProps = {
   titleClassName?: string;
   contentClassName?: string;
   footerClassName?: string;
+  footerStart?: ReactNode;
 };
 
 export function ChatCard({
@@ -35,6 +42,7 @@ export function ChatCard({
   titleClassName,
   contentClassName,
   footerClassName,
+  footerStart,
 }: ChatCardProps) {
   const placeholder = loading || empty;
   const tinted = Boolean(tone);
@@ -58,7 +66,7 @@ export function ChatCard({
       aria-hidden={empty || undefined}
       className={cn(
         "size-80 shrink-0 snap-start pb-0",
-        isRunning && "outline outline-1 -outline-offset-1 outline-green-500",
+        isRunning && "outline outline-1 -outline-offset-1 outline-green-500/50",
         placeholder && "relative gap-0 overflow-hidden py-0",
         className,
       )}
@@ -94,11 +102,12 @@ export function ChatCard({
       {!placeholder ? (
         <CardFooter
           className={cn(
-            "mt-auto justify-end border-t bg-muted/50 px-4 pb-4 [.border-t]:pt-4",
+            "mt-auto justify-between gap-3 border-t bg-muted/50 px-4 pb-4 [.border-t]:pt-4",
             footerClassName,
           )}
           style={footerStyle}
         >
+          <div className="min-h-8 min-w-0">{footerStart}</div>
           <Button
             aria-pressed={isRunning}
             onClick={onAction}
@@ -125,6 +134,14 @@ export function ChatCard({
 
 export function InfiniteCardIcon() {
   return <InfinityIcon aria-hidden="true" size={32} weight="regular" />;
+}
+
+export function AwaitReplyCardIcon() {
+  return <ChatCircleDots aria-hidden="true" size={28} weight="regular" />;
+}
+
+export function CompletionChecksCardIcon() {
+  return <Checks aria-hidden="true" size={28} weight="regular" />;
 }
 
 type TurnCountMarkerProps = {

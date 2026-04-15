@@ -1,10 +1,18 @@
 import type { ElectrobunConfig } from "electrobun";
 
+const releaseBaseUrl = process.env["RELEASE_BASE_URL"] || "";
+const enableCodesign = process.env["ELECTROBUN_ENABLE_CODESIGN"] === "true";
+const enableNotarize = process.env["ELECTROBUN_ENABLE_NOTARIZE"] === "true";
+
 export default {
   app: {
-    name: "Loop N Roll",
+    name: "Loopndroll",
     identifier: "dev.loopndroll.app",
     version: "0.1.0",
+  },
+  release: {
+    baseUrl: releaseBaseUrl,
+    generatePatch: false,
   },
   build: {
     bun: {
@@ -16,13 +24,18 @@ export default {
     },
     watchIgnore: ["dist/**"],
     mac: {
+      codesign: enableCodesign,
+      notarize: enableNotarize,
       bundleCEF: false,
+      icons: "build/icon.iconset",
     },
     linux: {
       bundleCEF: false,
+      icon: "build/icon.png",
     },
     win: {
       bundleCEF: false,
+      icon: "build/icon.png",
     },
   },
 } satisfies ElectrobunConfig;

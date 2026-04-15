@@ -8,6 +8,7 @@ const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   base: "./",
+  envPrefix: "VITE_",
   plugins: [tailwindcss(), react()],
   root: "src",
   resolve: {
@@ -18,6 +19,8 @@ export default defineConfig({
   build: {
     outDir: "../dist",
     emptyOutDir: true,
+    minify: "esbuild",
+    sourcemap: false,
   },
   server: {
     host: "127.0.0.1",

@@ -1,15 +1,32 @@
 import { useEffect, useState } from "react";
-import type { LoopPreset, LoopScope, LoopndrollSnapshot } from "./loopndroll";
+import type {
+  CreateLoopNotificationInput,
+  LoopPreset,
+  LoopScope,
+  LoopndrollSnapshot,
+  UpdateLoopNotificationInput,
+} from "./loopndroll";
 import {
   clearHooks,
+  createCompletionCheck,
+  createNotification,
+  deleteCompletionCheck,
+  deleteNotification,
   deleteSession,
   ensureLoopndrollSetup,
   getLoopndrollState,
   registerHooks,
   saveDefaultPrompt,
+  setGlobalCompletionCheckConfig,
+  setGlobalNotification,
   setGlobalPreset,
+  setSessionArchived,
+  setSessionNotifications,
   setLoopScope,
+  setSessionCompletionCheckConfig,
   setSessionPreset,
+  updateCompletionCheck,
+  updateNotification,
 } from "./loopndroll";
 
 type UseLoopndrollStateResult = {
@@ -17,9 +34,31 @@ type UseLoopndrollStateResult = {
   isLoading: boolean;
   errorMessage: string | null;
   savePrompt: (defaultPrompt: string) => Promise<void>;
+  addNotification: (notification: CreateLoopNotificationInput) => Promise<void>;
+  addCompletionCheck: (completionCheck: { label?: string; commands: string[] }) => Promise<void>;
+  editNotification: (notification: UpdateLoopNotificationInput) => Promise<void>;
+  editCompletionCheck: (completionCheck: {
+    id: string;
+    label?: string;
+    commands: string[];
+  }) => Promise<void>;
+  removeNotification: (notificationId: string) => Promise<void>;
+  removeCompletionCheck: (completionCheckId: string) => Promise<void>;
   updateScope: (scope: LoopScope) => Promise<void>;
   updateGlobalPreset: (preset: LoopPreset | null) => Promise<void>;
+  updateGlobalNotification: (notificationId: string | null) => Promise<void>;
+  updateGlobalCompletionCheckConfig: (
+    completionCheckId: string | null,
+    waitForReplyAfterCompletion: boolean,
+  ) => Promise<void>;
+  updateSessionNotifications: (sessionId: string, notificationIds: string[]) => Promise<void>;
   updateSessionPreset: (sessionId: string, preset: LoopPreset | null) => Promise<void>;
+  updateSessionCompletionCheckConfig: (
+    sessionId: string,
+    completionCheckId: string | null,
+    waitForReplyAfterCompletion: boolean,
+  ) => Promise<void>;
+  updateSessionArchived: (sessionId: string, archived: boolean) => Promise<void>;
   removeSession: (sessionId: string) => Promise<void>;
   installHooks: () => Promise<void>;
   uninstallHooks: () => Promise<void>;
@@ -96,14 +135,51 @@ export function useLoopndrollState(): UseLoopndrollStateResult {
     savePrompt(defaultPrompt) {
       return runMutation(() => saveDefaultPrompt(defaultPrompt));
     },
+    addNotification(notification) {
+      return runMutation(() => createNotification(notification));
+    },
+    addCompletionCheck(completionCheck) {
+      return runMutation(() => createCompletionCheck(completionCheck));
+    },
+    editNotification(notification) {
+      return runMutation(() => updateNotification(notification));
+    },
+    editCompletionCheck(completionCheck) {
+      return runMutation(() => updateCompletionCheck(completionCheck));
+    },
+    removeNotification(notificationId) {
+      return runMutation(() => deleteNotification(notificationId));
+    },
+    removeCompletionCheck(completionCheckId) {
+      return runMutation(() => deleteCompletionCheck(completionCheckId));
+    },
     updateScope(scope) {
       return runMutation(() => setLoopScope(scope));
     },
     updateGlobalPreset(preset) {
       return runMutation(() => setGlobalPreset(preset));
     },
+    updateGlobalNotification(notificationId) {
+      return runMutation(() => setGlobalNotification(notificationId));
+    },
+    updateGlobalCompletionCheckConfig(completionCheckId, waitForReplyAfterCompletion) {
+      return runMutation(() =>
+        setGlobalCompletionCheckConfig(completionCheckId, waitForReplyAfterCompletion),
+      );
+    },
+    updateSessionNotifications(sessionId, notificationIds) {
+      return runMutation(() => setSessionNotifications(sessionId, notificationIds));
+    },
     updateSessionPreset(sessionId, preset) {
       return runMutation(() => setSessionPreset(sessionId, preset));
+    },
+    updateSessionCompletionCheckConfig(sessionId, completionCheckId, waitForReplyAfterCompletion) {
+      return runMutation(() =>
+        setSessionCompletionCheckConfig(sessionId, completionCheckId, waitForReplyAfterCompletion),
+      );
+    },
+    updateSessionArchived(sessionId, archived) {
+      return runMutation(() => setSessionArchived(sessionId, archived));
     },
     removeSession(sessionId) {
       return runMutation(() => deleteSession(sessionId));

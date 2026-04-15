@@ -3,3 +3,6 @@ dist
 build
 .DS_Store
 *.log
+.env
+.env.local
+.env.*.local

@@ -32,10 +32,11 @@ Before releasing, verify:
 ## Standard workflow
 
 1. Read `package.json` and confirm the current version.
-2. If the user asked for a version bump, edit only `package.json` first. If the user asked to release without specifying a version, bump the patch version in `package.json` by `+0.0.1` first.
-3. Commit and push the version bump before releasing.
-4. Ensure the working tree is clean because `scripts/release-macos.sh` refuses dirty releases unless `ALLOW_DIRTY_RELEASE=true`.
-5. Run:
+2. If the working tree has uncommitted changes, commit and push those changes before changing the version or starting the release. If those changes are not intended for release, stop and confirm with the user instead of releasing them accidentally.
+3. If the user asked for a version bump, edit only `package.json` first. If the user asked to release without specifying a version, bump the patch version in `package.json` by `+0.0.1` first.
+4. Commit and push the version bump before releasing.
+5. Ensure the working tree is clean because `scripts/release-macos.sh` refuses dirty releases unless `ALLOW_DIRTY_RELEASE=true`.
+6. Run:
 
 ```bash
 bash scripts/release-macos.sh v<version>
@@ -67,6 +68,7 @@ Do not re-implement this unless the script is broken. `scripts/release-macos.sh`
 ## Operational guidance
 
 - Prefer releasing before making unrelated repo edits. The script expects a clean tree.
+- If there are uncommitted changes in the repo, commit and push them before the version bump and release. Do not ship unreviewed local work by accident; if the changes should not be part of the release, stop and ask the user.
 - If the user does not specify a version, default to the next patch release by bumping `package.json` from the current version to `+0.0.1` before running the release.
 - If you need to add repo changes such as documentation or a skill, do that after the release and commit them separately.
 - If the release already exists for the requested tag, the script will upload the fresh artifacts with `--clobber`.

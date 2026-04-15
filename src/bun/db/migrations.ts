@@ -705,6 +705,29 @@ function nowIsoString() {
   return new Date().toISOString();
 }
 
+function shouldIgnoreMigrationStatementError(
+  sqlite: Database,
+  statement: string,
+  error: unknown,
+) {
+  const message = error instanceof Error ? error.message : String(error);
+  if (!message.toLowerCase().includes("duplicate column name:")) {
+    return false;
+  }
+
+  const match = /^\s*alter\s+table\s+(\w+)\s+add\s+column\s+(\w+)/i.exec(statement);
+  if (!match) {
+    return false;
+  }
+
+  const [, tableName, columnName] = match;
+  const rows = sqlite.query(`pragma table_info(${tableName})`).all() as Array<{
+    name?: string;
+  }>;
+
+  return rows.some((row) => row.name === columnName);
+}
+
 export function applyAppMigrations(
   sqlite: Database,
   migrations: readonly AppMigration[] = appMigrations,
@@ -727,7 +750,15 @@ export function applyAppMigrations(
 
   const applyMigration = sqlite.transaction((migration: AppMigration) => {
     for (const statement of migration.statements) {
-      sqlite.exec(statement);
+      try {
+        sqlite.exec(statement);
+      } catch (error) {
+        if (shouldIgnoreMigrationStatementError(sqlite, statement, error)) {
+          continue;
+        }
+
+        throw error;
+      }
     }
 
     insertAppliedMigration.run(migration.id, migration.name, nowIsoString());

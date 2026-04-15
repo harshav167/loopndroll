@@ -2476,6 +2476,22 @@ function configureDatabase(db) {
   }
 }
 
+function shouldIgnoreMigrationStatementError(db, statement, error) {
+  const message = error instanceof Error ? error.message : String(error);
+  if (!message.toLowerCase().includes("duplicate column name:")) {
+    return false;
+  }
+
+  const match = /^\\s*alter\\s+table\\s+(\\w+)\\s+add\\s+column\\s+(\\w+)/i.exec(statement);
+  if (!match) {
+    return false;
+  }
+
+  const [, tableName, columnName] = match;
+  const rows = db.query(\`pragma table_info(\${tableName})\`).all();
+  return rows.some((row) => row.name === columnName);
+}
+
 function applyMigrations(db) {
   db.exec(\`create table if not exists schema_migrations (
     id integer primary key,
@@ -2490,7 +2506,15 @@ function applyMigrations(db) {
   );
   const applyMigration = db.transaction((migration) => {
     for (const statement of migration.statements) {
-      db.exec(statement);
+      try {
+        db.exec(statement);
+      } catch (error) {
+        if (shouldIgnoreMigrationStatementError(db, statement, error)) {
+          continue;
+        }
+
+        throw error;
+      }
     }
 
     insertMigration.run(migration.id, migration.name, nowIsoString());

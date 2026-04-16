@@ -1,87 +1,56 @@
-# Loopndroll
+<h1 align="center">Loopndroll</h1>
 
-Loopndroll is a desktop app for keeping Codex chats moving after Codex tries to stop.
+<p align="center"><strong>Let Codex run until the task is actually done.</strong></p>
+<p align="center"><a href="https://github.com/lnikell/loopndroll/releases/latest/download/stable-macos-arm64-Loopndroll.dmg">Download</a></p>
 
-It watches Codex hook events, keeps a list of chats, sends notifications, and lets you continue work from Telegram when needed.
+If you've ever had to send dozens of follow-up messages just to keep Codex running, or felt frustrated when it skipped tests, lint, or typecheck even though you clearly asked for them in Agents.md, this might help.
 
-## What The App Does
+## With Loopndroll, you can:
 
-- Tracks Codex chats automatically.
-- Shows active chats and archived chats.
-- Lets you run chats in different modes.
-- Sends stop notifications to Slack or Telegram.
-- Lets you reply from Telegram to continue a chat.
-- Lets you save reusable completion check command groups.
-- Registers the Codex hooks the app needs.
+- keep Codex running until you stop it
+- require specific commands at the end of a task, and keep going until they pass
+- get progress updates in Telegram or Slack, and even reply to redirect the work or change the mode
+
+## How does it work
+
+Loopndroll plugs into Codex through Codex Hooks.
+
+When a chat starts, Loopndroll registers it and remembers the settings for that task.
+
+When Codex tries to stop, Loopndroll gets a chance to decide what should happen next. Depending on the mode you picked, it can:
+
+- let the chat stop
+- send another prompt and keep Codex going
+- run your completion checks first, and keep going if they fail
+- wait for a reply from Telegram and feed that reply back into the same chat
+
+At the same time, it can send the latest assistant message to Telegram or Slack so you can see progress without sitting in front of Codex the whole time.
+
+**IMPORTANT:** Loopndroll runs fully locally on your machine. It does not send your chats, prompts, or app data to any Loopndroll server. If you connect Telegram or Slack, you are using **your own bot** or **your own webhook**, under your control.
 
 ## Modes
 
-- `Infinite`: when Codex stops, Loopndroll sends the continue prompt and keeps going.
-- `Await Reply`: when Codex stops, Loopndroll waits for a Telegram reply before continuing.
-- `Completion Checks`: runs your shell commands before Codex is allowed to finish. You can also make it wait for a Telegram reply after the checks pass.
-- `Max Turns 1`, `Max Turns 2`, `Max Turns 3`: keeps going for a limited number of extra turns, then stops.
+You can set a mode globally for all chats, or override it per task.
 
-Notes:
+If no mode is active, Codex stops normally.
 
-- `Await Reply` needs a Telegram notification attached to that chat.
-- Slack can receive notifications, but replying back into the chat flow is a Telegram feature.
+- **Infinite**: every time Codex stops, Loopndroll sends the default follow-up prompt and keeps the chat going. You can change that default prompt in Settings, or override it for one task by replying to that task in Telegram.
+- **Await Reply**: when Codex stops, Loopndroll waits for your reply in Telegram, then sends that reply back into the same chat.
+- **Completion Checks**: when Codex stops, Loopndroll runs your commands like tests, lint, or typecheck. If any command fails, it tells Codex to keep going until they pass.
+- **Max Turns 1 / 2 / 3**: Loopndroll keeps Codex going for a fixed number of extra turns, then lets it stop.
 
-## Main Features
+This gives you a simple choice: keep pushing automatically, wait for human input, require checks to pass, or allow only a small number of extra turns.
 
-### 1. Chat control
+## Use cases
 
-You can set a mode for all chats, or set a different mode for one specific chat.
+- **Keep pushing on a messy refactor without making me send "keep going" every 5 minutes**
+  Use **Infinite** when the work is real, but there is no clean automatic way to evaluate "done" yet. This fits tasks like cross-file refactors, bug hunts, and long review-comment cleanup where the next step depends on what Codex finds.
 
-Each chat gets a short reference like `C22`. That reference is used in Telegram commands.
+- **Make sure `pnpm test` passes before marking the task as done**
+  Use **Completion Checks** when you want Codex to stop only after the repo is actually green. This is for the common case where the agent says it is done, but tests, lint, or typecheck still fail.
 
-### 2. Notifications
-
-You can add:
-
-- Slack destinations
-- Telegram destinations
-
-When Codex stops, Loopndroll can send the final reply there.
-
-### 3. Telegram reply bridge
-
-Telegram is not just for notifications. You can also:
-
-- reply to a stop message to continue a chat
-- send commands like `/status` and `/mode`
-- target a specific chat by its reference, like `C22`
-
-### 4. Completion checks
-
-Completion checks are named command groups.
-
-Example:
-
-```text
-pnpm lint
-pnpm test
-```
-
-Commands run one by one and stop on the first failure.
-
-### 5. Hook registration
-
-The app can register the Codex hooks it needs for you.
-
-This updates:
-
-- `~/.codex/hooks.json`
-- `~/.codex/config.toml`
-
-## Quick Setup
-
-1. Install dependencies with `pnpm install`.
-2. Start the app with `pnpm run dev`.
-3. Open `Settings`.
-4. In `Hook Registration`, click `Register`.
-5. Add a Slack or Telegram notification.
-6. Start a Codex chat so it appears on the Home screen.
-7. Pick a mode for that chat, or set a global mode.
+- **Send me the result in Telegram and wait for my decision**
+  Use **Await Reply** when Codex reaches a decision point and should wait for you instead of guessing. This works well when you want to review a draft, approve a plan, or redirect the work while you are away from your desk.
 
 ## Telegram Setup
 

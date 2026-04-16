@@ -1,7 +1,13 @@
+
+
+
+
 <h1 align="center">Loopndroll</h1>
 
 <p align="center"><strong>Let Codex run until the task is actually done.</strong></p>
 <p align="center"><a href="https://github.com/lnikell/loopndroll/releases/latest/download/stable-macos-arm64-Loopndroll.dmg">Download</a></p>
+
+https://github.com/user-attachments/assets/1deba634-a305-4686-8654-65f889162932
 
 If you've ever had to send dozens of follow-up messages just to keep Codex running, or felt frustrated when it skipped tests, lint, or typecheck even though you clearly asked for them in Agents.md, this might help.
 

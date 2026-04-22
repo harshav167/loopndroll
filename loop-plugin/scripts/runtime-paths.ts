@@ -35,15 +35,21 @@ export const TELEGRAM_NOTIFICATION_FOOTER =
   "Reply to this message in Telegram to continue this Claude Code session.";
 
 export function getLoopPluginPaths(): LoopPluginPaths {
-  const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT;
-  const pluginData = process.env.CLAUDE_PLUGIN_DATA;
+  const pluginRoot =
+    process.env.CLAUDE_PLUGIN_ROOT ??
+    process.env.CURSOR_PLUGIN_ROOT ??
+    process.cwd();
+  const pluginData =
+    process.env.CLAUDE_PLUGIN_DATA ??
+    process.env.CURSOR_PLUGIN_DATA ??
+    join(homedir(), ".cursor", "plugins", "data", "loop-plugin");
 
   if (!pluginRoot || pluginRoot.trim().length === 0) {
-    throw new Error("CLAUDE_PLUGIN_ROOT is required.");
+    throw new Error("Plugin root path is required.");
   }
 
   if (!pluginData || pluginData.trim().length === 0) {
-    throw new Error("CLAUDE_PLUGIN_DATA is required.");
+    throw new Error("Plugin data path is required.");
   }
 
   const nativeLoopndrollDirectory = join(

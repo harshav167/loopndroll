@@ -1,0 +1,19 @@
+{
+  "name": "loop-plugin",
+  "displayName": "Loop Plugin",
+  "version": "0.1.2",
+  "description": "Loopndroll plugin surfaces for Cursor, plus Claude hook runtime assets for compatible environments.",
+  "author": {
+    "name": "Harsha Vardhan"
+  },
+  "license": "UNLICENSED",
+  "keywords": [
+    "loopndroll",
+    "hooks",
+    "cursor",
+    "claude",
+    "debugging"
+  ],
+  "skills": "skills",
+  "hooks": "hooks/hooks.json"
+}

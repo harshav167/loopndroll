@@ -1,0 +1,12 @@
+{
+  "name": "loopndroll",
+  "owner": {
+    "name": "Harsha Vardhan"
+  },
+  "plugins": [
+    {
+      "name": "loop-plugin",
+      "source": "./loop-plugin"
+    }
+  ]
+}

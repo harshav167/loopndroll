@@ -1,7 +1,7 @@
 {
   "name": "loop-plugin",
   "description": "Loopndroll runtime hooks for Claude Code sessions.",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "author": {
     "name": "Harsha Vardhan"
   }

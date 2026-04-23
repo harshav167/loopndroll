@@ -168,8 +168,41 @@ function rewriteHookOutput(input, stdout) {
   return stdout;
 }
 
+function shouldSkipProbeSession(input) {
+  if (input?.hook_event_name !== "SessionStart") {
+    return false;
+  }
+
+  const cwd = typeof input?.cwd === "string" ? input.cwd : "";
+  if (cwd.length === 0) {
+    return true;
+  }
+
+  const probePathPatterns = [
+    /\/Library\/Application Support\/CodexBar\//i,
+    /\/Library\/Application Support\/ClaudeProbe\b/i,
+    /\/Library\/Application Support\/.*Probe(\/|$)/i,
+    /\/Library\/Caches\//i,
+    /\/var\/folders\//,
+  ];
+
+  if (probePathPatterns.some((pattern) => pattern.test(cwd))) {
+    return true;
+  }
+
+  if (cwd === "/" || cwd === "/tmp" || /^\/tmp\/loop-plugin-/.test(cwd)) {
+    return true;
+  }
+
+  return false;
+}
+
 const stdin = await Bun.stdin.text();
 const normalizedInput = await normalizeHookInput(JSON.parse(stdin));
+
+if (shouldSkipProbeSession(normalizedInput)) {
+  process.exit(0);
+}
 const result = spawnSync("bun", [executablePath], {
   input: JSON.stringify(normalizedInput),
   encoding: "utf8",

@@ -1,7 +1,7 @@
 {
   "name": "loop-plugin",
   "displayName": "Loop Plugin",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Loopndroll plugin surfaces for Cursor, plus Claude hook runtime assets for compatible environments.",
   "author": {
     "name": "Harsha Vardhan"

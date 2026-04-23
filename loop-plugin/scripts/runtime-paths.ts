@@ -38,10 +38,12 @@ export function getLoopPluginPaths(): LoopPluginPaths {
   const pluginRoot =
     process.env.CLAUDE_PLUGIN_ROOT ??
     process.env.CURSOR_PLUGIN_ROOT ??
+    process.env.DROID_PLUGIN_ROOT ??
     process.cwd();
   const pluginData =
     process.env.CLAUDE_PLUGIN_DATA ??
     process.env.CURSOR_PLUGIN_DATA ??
+    process.env.DROID_PLUGIN_DATA ??
     join(homedir(), ".cursor", "plugins", "data", "loop-plugin");
 
   if (!pluginRoot || pluginRoot.trim().length === 0) {

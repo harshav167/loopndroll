@@ -1,6 +1,6 @@
 {
   "name": "loop-plugin",
-  "description": "Loopndroll runtime hooks for Claude Code sessions.",
+  "description": "Loopndroll runtime hooks for Factory droid CLI sessions.",
   "version": "0.1.4",
   "author": {
     "name": "Harsha Vardhan"

@@ -1,8 +1,11 @@
 {
   "name": "loop-plugin",
   "description": "Loopndroll runtime hooks for Factory droid CLI sessions.",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": {
     "name": "Harsha Vardhan"
-  }
+  },
+  "hooks": "./hooks/hooks.json",
+  "skills": "./skills/",
+  "agents": "./agents/"
 }

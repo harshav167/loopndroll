@@ -1,5 +1,5 @@
 {
-  "description": "Loopndroll lifecycle hooks for Claude Code.",
+  "description": "Loopndroll lifecycle hooks for Claude Code, Cursor, and Factory droid.",
   "hooks": {
     "SessionStart": [
       {
@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"${CLAUDE_PLUGIN_ROOT:-${CURSOR_PLUGIN_ROOT:-$DROID_PLUGIN_ROOT}}\" && bun scripts/loop-hook.js",
+            "command": "bun run \"${CLAUDE_PLUGIN_ROOT:-${CURSOR_PLUGIN_ROOT:-${DROID_PLUGIN_ROOT}}}/scripts/loop-hook.js\"",
             "timeout": 30
           }
         ]
@@ -18,7 +18,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"${CLAUDE_PLUGIN_ROOT:-${CURSOR_PLUGIN_ROOT:-$DROID_PLUGIN_ROOT}}\" && bun scripts/loop-hook.js",
+            "command": "bun run \"${CLAUDE_PLUGIN_ROOT:-${CURSOR_PLUGIN_ROOT:-${DROID_PLUGIN_ROOT}}}/scripts/loop-hook.js\"",
             "timeout": 30
           }
         ]
@@ -29,7 +29,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd \"${CLAUDE_PLUGIN_ROOT:-${CURSOR_PLUGIN_ROOT:-$DROID_PLUGIN_ROOT}}\" && bun scripts/loop-hook.js",
+            "command": "bun run \"${CLAUDE_PLUGIN_ROOT:-${CURSOR_PLUGIN_ROOT:-${DROID_PLUGIN_ROOT}}}/scripts/loop-hook.js\"",
             "timeout": 86400
           }
         ]
